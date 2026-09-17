@@ -3,7 +3,7 @@ const respuestaEstandar = require('../utils/respuestaEstandar');
 
 const getEspecialidades = async (req, res) => {
   try {
-    const especialidades = await Especialidad.find();
+    const especialidades = await Especialidad.find({ activo: true });
     return respuestaEstandar(res, 200, true, 'Especialidades obtenidas exitosamente', especialidades);
   } catch (error) {
     return respuestaEstandar(res, 500, false, 'Error al obtener las especialidades', error.message);
@@ -59,12 +59,12 @@ const deleteEspecialidad = async (req, res) => {
         );
 
         if (!especialidadBorrado) {
-            return respuestaEstandar(res, 404, false, 'Especialidad no encontrado con ID ${id}');
+            return respuestaEstandar(res, 404, false, `Especialidad no encontrada con ID ${id}`);
         }
         
-        return respuestaEstandar(res, 200, true,  'Especialidad eliminado exitosamente', especialidadBorrado);
+        return respuestaEstandar(res, 200, true, 'Especialidad eliminada exitosamente', especialidadBorrado);
     } catch (error) {
-        console.error('Error al eliminar el especialidad:', error);
+        console.error('Error al eliminar la especialidad:', error);
         return respuestaEstandar(res, 400, false, 'ID con formato invalido', error.message);
     }
 };
