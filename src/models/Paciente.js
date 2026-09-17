@@ -50,7 +50,7 @@ const pacienteSchema = new mongoose.Schema({
         numero: {
             type: String,
             required: true,
-            match: [/^[0-9]{7,10}$/, 'El número de teléfono no es válido']
+            match: [/^[0-9]{6,10}$/, 'El número de teléfono no es válido']
         }
     },
     obraSocial: {
@@ -66,32 +66,6 @@ const pacienteSchema = new mongoose.Schema({
             type: String
         },
     },
-    historialMedico: {
-        fecha:{
-            type: Date,
-            required: [true, 'La fecha del historial médico es obligatoria'],
-            validate: {
-            validator: function(value) {
-                return value >= new Date();
-            },
-            message: 'La fecha del turno debe ser una fecha futura',
-        }
-        },
-        diagnostico: {
-            type: String,
-            required: [true, 'El diagnóstico es obligatorio']
-        },
-        tratamiento: {
-            type: String,
-            required: [true, 'El tratamiento es obligatorio']
-
-        },
-        medico: {
-            type: String,
-            required: [true, 'El nombre del médico es obligatorio']
-        }
-       
-    }
 }, {
     timestamps: true
 });
