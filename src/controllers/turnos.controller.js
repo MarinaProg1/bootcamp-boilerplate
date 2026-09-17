@@ -14,30 +14,8 @@ const getTurnos = async (req, res) => {
 const createTurno = async (req, res) => {
     try {
 
-        const origenPeticion = req.headers['x-origen'];
-        const tokenSeguridad = req.headers['authorization'];
+       const nuevoTurno = await Turno.create(req.body);
 
-        console.log("🌎 Peticion realizada desde:", origenPeticion);
-
-        if (tokenSeguridad != 'token123') {
-            return respuestaEstandar(res, 401, false, 'no tiene permisos');
-        }
-
-        const esUrgente = req.query.urgencia === 'true';
-
-        const datosDelTurno = {
-            paciente: req.body.paciente,
-            especialidad: req.body.especialidad,
-            fechaTurno: req.body.fechaTurno
-        };
-
-        if (esUrgente) {
-            datosDelTurno.estado = 'atendido';
-            datosDelTurno.observaciones = 'ingreso por guardia medica';
-            console.log("🚨 ALERTA: registrado un turno de urgencia");
-        }
-
-        const nuevoTurno = await Turno.create(datosDelTurno);
         return respuestaEstandar(res, 201, true, 'Turno creado exitosamente', nuevoTurno);
 
     } catch (error) {
@@ -57,14 +35,13 @@ const deleteTurno = async (req, res) => {
         const { id } = req.params;
 
         const turnoBorrado = await Turno.findByIdAndUpdate(
-            id, 
-            { activo: false },
-            { estado: 'cancelado' },
+            id,
+            { activo: false, estado: 'cancelado' },
             { new: true }
         );
 
         if (!turnoBorrado) {
-            return respuestaEstandar(res, 404, false, 'Turno no encontrado con ID ${id}');
+            return respuestaEstandar(res, 404, false, `Turno no encontrado con ID ${id}`);
         }
         
         return respuestaEstandar(res, 200, true, 'Turno eliminado exitosamente', turnoBorrado);

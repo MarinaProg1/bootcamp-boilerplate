@@ -6,7 +6,7 @@ const getPacientes = async (req, res) => {
     try {
         
         // ?obraSocial=OSDE&dni=12345678
-        const { obraSocial, dni } = req.query;
+        const { obraSocial, dni, id } = req.query;
 
         const filtro = {};
 
@@ -19,6 +19,10 @@ const getPacientes = async (req, res) => {
             filtro.dni = dni;
         }
 
+        if (id) {
+            filtro._id = id;
+        }
+
         console.log("🟢 Filtro armado:", filtro);
 
         const pacientes = await Paciente.find(filtro);
@@ -27,6 +31,40 @@ const getPacientes = async (req, res) => {
 
     } catch (error) {
         return respuestaEstandar(res, 500, false, 'Error al obtener los pacientes', error.message);
+    }
+};
+
+const getPacienteById = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        const paciente = await Paciente.findById(id);
+
+        if (!paciente) {
+            return respuestaEstandar(
+                res,
+                404,
+                false,
+                'Paciente no encontrado'
+            );
+        }
+
+        return respuestaEstandar(
+            res,
+            200,
+            true,
+            'Paciente obtenido exitosamente',
+            paciente
+        );
+
+    } catch (error) {
+        return respuestaEstandar(
+            res,
+            400,
+            false,
+            'Error al obtener el paciente',
+            error.message
+        );
     }
 };
 
@@ -52,11 +90,11 @@ const createPaciente = async (req, res) => {
 const deletePaciente = async (req, res)=>{
     try {
         const { id } = req.params;
-        const turno = await Paciente.findByIdAndDelete(id);
-        if (!turno) {
+        const pacienteBorrado = await Paciente.findByIdAndDelete(id);
+        if (!pacienteBorrado) {
             return respuestaEstandar(res, 404, false, 'Paciente no encontrado');
         }
-        return respuestaEstandar(res, 200, true, 'Paciente eliminado correctamente', turno);
+        return respuestaEstandar(res, 200, true, 'Paciente eliminado correctamente', pacienteBorrado);
     } catch (error) {
        
         return respuestaEstandar(res, 400 , false, 'Error al eliminar el paciente', error.message);
@@ -64,6 +102,7 @@ const deletePaciente = async (req, res)=>{
 };
 module.exports = {
     getPacientes,
+    getPacienteById,
     createPaciente,
     deletePaciente
 };
