@@ -78,12 +78,12 @@ const HistoriaClinicaSchema = new mongoose.Schema({
     timestamps: true
 });
 
-HistoriaClinicaSchema.set('toJSON', {
-    transform: (documento, retorno) => {
-        retorno.id = retorno._id;
-        delete retorno._id;
-        delete retorno.__v;
-        return retorno;
+   HistoriaClinicaSchema.set('toJSON', {
+    transform: (documento, historiaClinicaRetorno) => {
+        historiaClinicaRetorno.id = historiaClinicaRetorno._id;
+        delete historiaClinicaRetorno._id;
+        delete historiaClinicaRetorno .__v;
+        return historiaClinicaRetorno;
     }
 });
 

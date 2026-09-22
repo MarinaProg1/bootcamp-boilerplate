@@ -2,9 +2,12 @@ const mongoose = require('mongoose');
 
 const connectDB = async () => {
     try {
-        await mongoose.connect(process.env.DATABASE_URL);
+        if (!process.env.DATABASE_URL_ATLAS) {
+            throw new Error('La variable de entorno DATABASE_URL_ATLAS no está definida. Por favor verifica tu archivo .env');
+        }
+        await mongoose.connect(process.env.DATABASE_URL_ATLAS);
     } catch (error) {
-        console.error('🔴 Error al conectar a la base de datos:', error);
+        console.error('🔴 Error al conectar a la base de datos:', error.message || error);
         process.exit(1);
     }
 };

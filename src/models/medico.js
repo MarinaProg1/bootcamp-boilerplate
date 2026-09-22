@@ -12,17 +12,24 @@ const medicoSchema = new mongoose.Schema({
         unique: [true, 'Esta matrícula ya está registrada'],
     },
     especialidad: {
-        type: String,
-        required: true,
-        lowercase: true,
-        enum: {
-            values: ['cardiologia', 'dermatologia', 'clinica medica', 'pediatria', 'neurologia', 'traumatologia', 'odontologia', 'oftalmologia', 'ginecologia', 'psiquiatria', 'geriatria', 'endocrinologia', 'gastroenterologia', 'urologia', 'otorrinolaringologia', 'reumatologia', 'neumonologia', 'oncologia', 'hematologia', 'inmunologia', 'infectologia', 'bacteriologia'],
-            message: '{VALUE} no es una especialidad válida',
-        },
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Especialidad',
     },
     telefono: {
-        type: String,
-        required: [true, 'El teléfono es obligatorio'],
+        tipo: {
+            type: String,
+            enum: ['CELULAR', 'FIJO', 'TRABAJO']
+        },
+        codigoArea: {
+            type: String,
+            required: true,
+            match: [/^[0-9]{2,5}$/, 'El código de área no es válido']
+        },
+        numero: {
+            type: String,
+            required: true,
+            match: [/^[0-9]{6,10}$/, 'El número de teléfono no es válido']
+        }
     },
     email: {
         type: String,
@@ -33,6 +40,7 @@ const medicoSchema = new mongoose.Schema({
     activo: {
         type: Boolean,
         default: true,
+        select: false
     },
 }, {
     timestamps: true,
